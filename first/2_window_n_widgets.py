@@ -30,10 +30,11 @@ label.pack()
 text = tk.Text(master=window)
 text.pack()
 
-# ttk entry
+# ttk entry (single line i think)
 entry = ttk.Entry(master=window)
 entry.pack()
 
+# video exercise (ignore this lines)
 ttk.Label(master=window, text="my label").pack()
 ttk.Button(master=window, text="print hello", command=print_hello).pack()
 
