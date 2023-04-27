@@ -60,4 +60,38 @@ radio1.pack()
 radio2 = ttk.Radiobutton(window, text="radio2", value=2, variable=radio_var)
 radio2.pack()
 
+exer_var = tk.StringVar()
+exer_bool = tk.BooleanVar()
+
+
+def exer_radio_func():
+    print(exer_var.get())
+    exer_bool.set(False)
+
+
+check3 = ttk.Checkbutton(
+    master=window,
+    text="exercise check",
+    variable=exer_bool,
+    command=lambda: print(exer_var.get()),
+)
+check3.pack()
+radio3 = ttk.Radiobutton(
+    master=window,
+    text="exercise radio1",
+    value="a",
+    variable=exer_var,
+    command=exer_radio_func,
+)
+radio3.pack()
+radio4 = ttk.Radiobutton(
+    master=window,
+    text="exercise radio2",
+    value="b",
+    variable=exer_var,
+    command=exer_radio_func,
+)
+radio4.pack()
+
+
 window.mainloop()
