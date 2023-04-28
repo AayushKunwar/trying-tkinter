@@ -46,8 +46,10 @@ exer_text = tk.StringVar(value="A")
 exer_spin = tk.Spinbox(window, textvariable=exer_text)
 exer_spin["values"] = ("A", "B", "C", "D", "E")
 exer_spin.pack()
+# it dont work 😢
 exer_spin.bind("<<Increment>>", lambda event: print("what?"))
 
+# trying again
 exercise_letters = ("A", "B", "C", "D", "E")
 exercise_string = tk.StringVar(value=exercise_letters[0])
 exercise_spin = tk.Spinbox(
