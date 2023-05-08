@@ -7,7 +7,7 @@ window.title("GoL")
 window.geometry("600x600")
 
 window_width = 600
-box_count = 5
+box_count = 12
 box_width = int(window_width / box_count)
 print(box_width)
 
@@ -23,13 +23,13 @@ def draw_box(x, y):
 
 def get_nbour(x, y):
     nbour_count = 0
-    for xc in range(-1, 1):
-        for xr in range(-1, 1):
+    for xc in range(-1, 2):
+        for xr in range(-1, 2):
             if xc == 0 and xr == 0:
-                break
+                continue
             r = x + xr
             c = y + xc
-            if r >= 0 and r <= box_count and y >= 0 and y <= box_count:
+            if r >= 0 and r < box_count and c >= 0 and c < box_count:
                 nbour_count += current_state[r][c]
     return nbour_count
 
@@ -63,14 +63,19 @@ def next_step():
                 else:
                     next_state[r][c] = 0
     current_state = next_state
-    print("next")
+    next_state = make_empty_state()
+    print("next state printing")
     print(next_state)
     print(current_state)
     draw_current_state()
 
 
-current_state = [[0 for _ in range(box_count)] for _ in range(box_count)]
-next_state = [[0 for _ in range(box_count)] for _ in range(box_count)]
+def make_empty_state():
+    return [[0 for _ in range(box_count)] for _ in range(box_count)]
+
+
+current_state = make_empty_state()
+next_state = make_empty_state()
 print(current_state)
 
 top_frame = ttk.Frame(window, height=100)
