@@ -13,6 +13,7 @@ window.geometry("600x400")
 def button_func():
     print("a basic function")
     print(radio_var.get())
+    print(button_string.set("changed"))
 
 
 button_string = tk.StringVar(value="button with string var")

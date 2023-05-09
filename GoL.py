@@ -1,21 +1,22 @@
 import tkinter as tk
 from tkinter import ttk
 import math
+import time
+import os
 
 window = tk.Tk()
 window.title("GoL")
-window.geometry("600x600")
+window.geometry("700x700")
 
 window_width = 600
-box_count = 12
+box_count = 32
 box_width = int(window_width / (box_count - 1))
-print(box_width)
+# print(box_width)
 
 
 def draw_box(x, y):
     global canvas
     # x,y is the box index
-    # print(f"x:{x} and y:{y}")
     x = x * box_width
     y = y * box_width
     canvas.create_rectangle((y, x, y + box_width, x + box_width), fill="red")
@@ -48,13 +49,11 @@ def draw_current_state():
 
 
 def next_step():
-    # print("next step")
     global current_state
     global next_state
     for r in range(box_count):
         for c in range(box_count):
             nbour_alive = get_nbour(r, c)
-            # print(nbour_alive)
             is_alive = current_state[r][c]
             if is_alive:
                 if nbour_alive in range(2, 4):
@@ -68,9 +67,6 @@ def next_step():
                     next_state[r][c] = 0
     current_state = next_state
     next_state = make_empty_state()
-    # print("next state printing")
-    # print(next_state)
-    # print(current_state)
     draw_current_state()
 
 
@@ -78,17 +74,41 @@ def make_empty_state():
     return [[0 for _ in range(box_count)] for _ in range(box_count)]
 
 
+def autoplay_handler():
+    if is_play.get():
+        next_step()
+        window.after(300, autoplay_handler)
+
+
+def toggle_autoplay():
+    global is_play
+    is_play.set(not is_play.get())
+    auto_play_name.set(f"Autoplay: {is_play.get()}")
+    autoplay_handler()
+
+
 current_state = make_empty_state()
 next_state = make_empty_state()
-print(current_state)
 
 top_frame = ttk.Frame(window, height=100)
 top_frame.pack()
 
 next_button = ttk.Button(top_frame, text="Next", command=next_step)
-next_button.pack()
+next_button.pack(side="left")
 
-canvas = tk.Canvas(window, bg="#181818", width=window_width, height=window_width)
+is_play = tk.BooleanVar(value=False)
+auto_play_name = tk.StringVar(value=f"Autoplay: {is_play.get()}")
+auto_play = ttk.Button(
+    top_frame,
+    text="Autoplay: False",
+    command=toggle_autoplay,
+    textvariable=auto_play_name,
+)
+auto_play.pack(side="left")
+
+canvas = tk.Canvas(
+    window, bg="#181818", width=window_width + 4, height=window_width + 4
+)
 canvas.pack()
 
 
@@ -97,9 +117,8 @@ def callback(event):
     # scale = box_count / (window_width - 10)
     c = math.floor(event.x / box_width)
     r = math.floor(event.y / box_width)
-    print(event.x, event.y, "and", r, c)
+    # print(event.x, event.y, "and", r, c)
     current_state[r][c] = (current_state[r][c] + 1) % 2
-    # print(current_state)
     draw_current_state()
 
 
@@ -111,5 +130,5 @@ draw_current_state()
 
 window.mainloop()
 
-# TODO: implement autoplay
-# TODO: implement other cellular automatons
+# TODO: implement mouse drag drawing
+# TODO: implement other cellular automatons?? brians brain??
