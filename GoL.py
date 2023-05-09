@@ -8,17 +8,21 @@ window.geometry("600x600")
 
 window_width = 600
 box_count = 12
-box_width = int(window_width / box_count)
+box_width = int(window_width / (box_count - 1))
 print(box_width)
 
 
 def draw_box(x, y):
     global canvas
     # x,y is the box index
+    # print(f"x:{x} and y:{y}")
     x = x * box_width
     y = y * box_width
-    print(f"x:{x} and y:{y}")
     canvas.create_rectangle((y, x, y + box_width, x + box_width), fill="red")
+
+
+def modi(x, y):
+    return (x % y + y) % y
 
 
 def get_nbour(x, y):
@@ -27,10 +31,10 @@ def get_nbour(x, y):
         for xr in range(-1, 2):
             if xc == 0 and xr == 0:
                 continue
-            r = x + xr
-            c = y + xc
-            if r >= 0 and r < box_count and c >= 0 and c < box_count:
-                nbour_count += current_state[r][c]
+            r = modi(x + xr, box_count)
+            c = modi(y + xc, box_count)
+            # if r >= 0 and r < box_count and c >= 0 and c < box_count:
+            nbour_count += current_state[r][c]
     return nbour_count
 
 
@@ -44,13 +48,13 @@ def draw_current_state():
 
 
 def next_step():
-    print("next step")
+    # print("next step")
     global current_state
     global next_state
     for r in range(box_count):
         for c in range(box_count):
             nbour_alive = get_nbour(r, c)
-            print(nbour_alive)
+            # print(nbour_alive)
             is_alive = current_state[r][c]
             if is_alive:
                 if nbour_alive in range(2, 4):
@@ -64,9 +68,9 @@ def next_step():
                     next_state[r][c] = 0
     current_state = next_state
     next_state = make_empty_state()
-    print("next state printing")
-    print(next_state)
-    print(current_state)
+    # print("next state printing")
+    # print(next_state)
+    # print(current_state)
     draw_current_state()
 
 
@@ -89,11 +93,13 @@ canvas.pack()
 
 
 def callback(event):
-    scale = box_count / window_width
-    c = math.floor(scale * event.x)
-    r = math.floor(scale * event.y)
+    # scaling broken
+    # scale = box_count / (window_width - 10)
+    c = math.floor(event.x / box_width)
+    r = math.floor(event.y / box_width)
+    print(event.x, event.y, "and", r, c)
     current_state[r][c] = (current_state[r][c] + 1) % 2
-    print(current_state)
+    # print(current_state)
     draw_current_state()
 
 
@@ -104,3 +110,6 @@ current_state[0][3] = 1
 draw_current_state()
 
 window.mainloop()
+
+# TODO: implement autoplay
+# TODO: implement other cellular automatons
