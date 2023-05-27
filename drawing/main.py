@@ -2,6 +2,9 @@ import tkinter as tk
 
 
 class Node(tk.Frame):
+    line_pos = None
+    line_start = None
+
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
         self.bind("<Button-1>", self.on_start_drag)
@@ -24,6 +27,14 @@ class Node(tk.Frame):
     def get_self(self):
         return self
 
+    @staticmethod
+    def line_handler(self):
+        if Node.line_pos is None:
+            Node.line_pos = (self.winfo_x(), self.winfo_y())
+            Node.line_start = self
+        else:
+            line_end = (self.winfo_x(), self.winfo_y())
+
 
 class Element(Node):
     def __init__(self, master, text, **kwargs):
@@ -32,7 +43,13 @@ class Element(Node):
         main_label = tk.Label(master=super().get_self(), text=text)
         main_label.place(x=super().winfo_x() + 40, y=super().winfo_y() + 40)
 
-        input1 = tk.Button(master=super().get_self(), bg="blue", width=1, height=1)
+        input1 = tk.Button(
+            master=super().get_self(),
+            bg="blue",
+            width=1,
+            height=1,
+            command=lambda: self.line_handler(self),
+        )
         input1.place(x=super().winfo_x(), y=super().winfo_y() + 20)
 
 
@@ -41,9 +58,9 @@ root.title("what what")
 root.geometry("600x400")
 
 label1 = Element(root, text="and", bg="red")
-# label2 = Node(root, width=100, height=100, bg="blue")
+label2 = Element(root, text="what", bg="green")
 
 label1.place(x=10, y=0)
-# label2.place(x=100, y=100)
+label2.place(x=100, y=100)
 
 root.mainloop()

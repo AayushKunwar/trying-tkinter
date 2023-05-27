@@ -55,7 +55,9 @@ def brush_size_adjust(event):
 
 
 brush_size = 4
-canvas.bind("<Motion>", draw_on_canvas)
+# canvas.bind("<Motion>", draw_on_canvas)
+canvas.bind("<B1-Motion>", draw_on_canvas)
+# canvas.bind("<Button-1>", draw_on_canvas)
 canvas.bind("<MouseWheel>", brush_size_adjust)
 
 window.mainloop()
