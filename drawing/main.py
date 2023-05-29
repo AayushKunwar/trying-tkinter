@@ -1,66 +1,93 @@
 import tkinter as tk
 
 
-class Node(tk.Frame):
-    line_pos = None
-    line_start = None
+class Button:
+    def __init__(self, canvas, x, y):
+        self.canvas = canvas
+        self.x = x
+        self.y = y
+        self.draw_button()
 
+    def draw_button(self):
+        self.canvas.create_rectangle(self.x, self.y, 30, 30, fill="blue")
+
+
+class Component:
+    def __init__(self, canvas, x, y):
+        self.canvas = canvas
+        self.x = x
+        self.y = y
+        self.width = 50
+        self.height = 50
+        self.tag = "component"
+        self.draw_card()
+
+    def draw_card(self, color="red"):
+        reference = self.canvas.create_rectangle(
+            self.x, self.y, self.width + self.x, self.height + self.y, fill=color
+        )
+        foo = Button(self.canvas, 10, 10)
+        # self.add_button(foo)
+        return reference
+
+    def on_click(self, event):
+        print("clicked this ")
+
+    def add_button(self, btn):
+        self.buttons.append(btn)
+
+
+# component maker, canvas handler
+class Main_Can(tk.Canvas):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
-        self.bind("<Button-1>", self.on_start_drag)
-        self.bind("<B1-Motion>", self.on_drag)
-        self.bind("<ButtonRelease-1>", self.on_drop)
-        self.drag_data = None
+        self.active = None
 
-    def on_start_drag(self, event):
-        self.drag_data = {"x": event.x, "y": event.y}
+        card1 = Component(canvas=self, x=10, y=10)
+        card2 = Component(canvas=self, x=100, y=200)
+        # button = tk.Button(card1, text="what what")
+        # button.place(x=2, y=2)
+
+        self.buttons = []
+        self.bind("<ButtonPress-1>", self.on_drag_start)
+        self.bind("<B1-Motion>", self.on_drag)
+        self.bind("<ButtonRelease-1>", self.on_drag_stop)
+
+    def on_drag_stop(self, event):
+        self.active = None
+
+    def on_drag_start(self, event):
+        item = self.find_closest(event.x, event.y)
+        try:
+            # item = self.find_withtag("current")
+            x1, y1, x2, y2 = self.coords(item[0])
+            if x1 <= event.x <= x2 and y1 <= event.y <= y2:
+                self.active = item[0]
+        except IndexError:
+            print("no item was clicked")
 
     def on_drag(self, event):
-        self.place(
-            x=self.winfo_x() + (event.x - self.drag_data["x"]),
-            y=self.winfo_y() + (event.y - self.drag_data["y"]),
-        )
+        if self.active == None:
+            return
+        coords = self.coords(self.active)
+        width = coords[2] - coords[0]
+        height = coords[1] - coords[3]
+        position = coords[0], coords[1]
 
-    def on_drop(self, event):
-        self.drag_data = None
+        x1 = event.x - width / 2
+        y1 = event.y - height / 2
+        x2 = event.x + width / 2
+        y2 = event.y + height / 2
+        # x=self.winfo_x() + (event.x - self.drag_data["x"]),
 
-    def get_self(self):
-        return self
-
-    @staticmethod
-    def line_handler(self):
-        if Node.line_pos is None:
-            Node.line_pos = (self.winfo_x(), self.winfo_y())
-            Node.line_start = self
-        else:
-            line_end = (self.winfo_x(), self.winfo_y())
-
-
-class Element(Node):
-    def __init__(self, master, text, **kwargs):
-        super().__init__(master=master, width=100, height=100, **kwargs)
-
-        main_label = tk.Label(master=super().get_self(), text=text)
-        main_label.place(x=super().winfo_x() + 40, y=super().winfo_y() + 40)
-
-        input1 = tk.Button(
-            master=super().get_self(),
-            bg="blue",
-            width=1,
-            height=1,
-            command=lambda: self.line_handler(self),
-        )
-        input1.place(x=super().winfo_x(), y=super().winfo_y() + 20)
+        self.coords(self.active, x1, y1, x2, y2)
 
 
 root = tk.Tk()
-root.title("what what")
-root.geometry("600x400")
+# root.state("zoomed")
+root.geometry("600x600")
 
-label1 = Element(root, text="and", bg="red")
-label2 = Element(root, text="what", bg="green")
-
-label1.place(x=10, y=0)
-label2.place(x=100, y=100)
+main_canvas = Main_Can(master=root, bg="skyblue")
+main_canvas.pack(fill="both", expand=1)
 
 root.mainloop()
