@@ -20,8 +20,6 @@ class Node(tk.Frame):
             x=self.winfo_x() + (event.x - self.drag_data["x"]),
             y=self.winfo_y() + (event.y - self.drag_data["y"]),
         )
-        print(self.winfo_x(), self.winfo_y())
-        print(self.drag_data)
 
     def on_drop(self, event):
         self.drag_data = None

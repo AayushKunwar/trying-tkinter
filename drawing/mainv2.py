@@ -1,11 +1,19 @@
 import tkinter as tk
 from tkinter import ttk
 
-# put const in settings file
+# TODO: put const in settings file
+# TODO FIXME XXX BUG HACK NOTE
+
+# TODO: overlap the main frame with a canvas
+# AND: use the update tension idea from 3rectangles.py file
+# to handle the line update
+# add update (lines) after drag_stop??
 
 
 # this handles the actual component making
 class Component(ttk.Label):
+    button_selected = None
+
     def __init__(
         self, master, text, in_buttons_count=1, out_buttons_count=1, func=None
     ):
@@ -21,8 +29,19 @@ class Component(ttk.Label):
         # button1 = ttk.Button(master=self, text="B")
         # button1.place(x=0, y=0, height=30, width=30)
 
-    def handle_button_input(self, index):
-        pass
+    def handle_button_input(self, index, type):
+        print("button entered")
+        print(index)
+        if Component.button_selected is not None:
+            # pass
+            if type == "input":
+                Component.button_selected = self.inputs[index]
+        else:
+            pass
+        # elif type == "input":
+        #     print("input")
+        # else:
+        #     print("output")
 
     def make_buttons(self, in_buttons, out_buttons):
         # 30 is the button height
@@ -32,14 +51,18 @@ class Component(ttk.Label):
         for i in range(1, in_buttons + 1):
             temp = ttk.Button(
                 master=self,
-                text="b",
-                command=lambda: self.handle_button_input(i - 1),
+                text="a",
+                command=lambda: self.handle_button_input(i - 1, type="input"),
             )
             temp.place(x=0, y=i * height_coeff - (30 / 2), width=30, height=30)
 
         height_coeff = 100 // (out_buttons + 1)
         for i in range(1, out_buttons + 1):
-            temp = ttk.Button(master=self, text="b")
+            temp = ttk.Button(
+                master=self,
+                text="b",
+                command=lambda: self.handle_button_input(i - 1, type="output"),
+            )
             temp.place(x=100 - 30, y=i * height_coeff - (30 / 2), width=30, height=30)
 
     def on_drag_start(self, event):
