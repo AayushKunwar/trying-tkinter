@@ -106,7 +106,7 @@ class IO(Component):
 
 
 # this handles the component making
-class MainCanvas(tk.Frame):
+class App(tk.Canvas):
     def __init__(self, master, **kwargs):
         super().__init__(master, **kwargs)
 
@@ -122,8 +122,13 @@ root = tk.Tk()
 root.geometry("800x600")
 root.title("what wha")
 
-canvas = MainCanvas(root, background="grey", height=500, width=600)
-canvas.pack()
+# canvas = tk.Canvas(master=root)
+# canvas.place(x=100, y=50)
 
+
+app = App(root, height=500, width=600, background="grey")
+app.place(x=50, y=50)
+
+foo = tk.Canvas.create_line(app, 1, 1, 100, 100, width=10)
 
 root.mainloop()
