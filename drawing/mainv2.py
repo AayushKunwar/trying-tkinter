@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from functools import partial
 
 # TODO: put const in settings file
 # TODO FIXME XXX BUG HACK NOTE
@@ -29,15 +30,24 @@ class Component(ttk.Label):
         # button1 = ttk.Button(master=self, text="B")
         # button1.place(x=0, y=0, height=30, width=30)
 
-    def handle_button_input(self, index, type):
+    def bind_card(self, card, another_card):
+        x1, y1 = card.winfo_x(), card.winfo_y()
+        print(x1, y1)
+
+    def handle_button_input(self, button, type):
         print("button entered")
-        print(index)
-        if Component.button_selected is not None:
+        print(button)
+        if Component.button_selected == button:
+            print("the same thing")
+        if Component.button_selected == None:
             # pass
             if type == "input":
-                Component.button_selected = self.inputs[index]
+                Component.button_selected = button
+                # print(Component.button_selected)
         else:
-            pass
+            if type == "output":
+                self.bind_card(button, Component.button_selected)
+
         # elif type == "input":
         #     print("input")
         # else:
@@ -49,21 +59,24 @@ class Component(ttk.Label):
         print(height_coeff)
 
         for i in range(1, in_buttons + 1):
+            index_counter = i - 1
             temp = ttk.Button(
                 master=self,
-                text="a",
-                command=lambda: self.handle_button_input(i - 1, type="input"),
+                text=f"{index_counter}",
+                command=partial(self.handle_button_input, temp, "input"),
             )
             temp.place(x=0, y=i * height_coeff - (30 / 2), width=30, height=30)
+            self.inputs.append(temp[i - 1])
 
         height_coeff = 100 // (out_buttons + 1)
         for i in range(1, out_buttons + 1):
             temp = ttk.Button(
                 master=self,
                 text="b",
-                command=lambda: self.handle_button_input(i - 1, type="output"),
+                command=lambda: self.handle_button_input(button=self, type="output"),
             )
             temp.place(x=100 - 30, y=i * height_coeff - (30 / 2), width=30, height=30)
+            self.outputs[i - 1] = temp
 
     def on_drag_start(self, event):
         # self.active = self
@@ -88,6 +101,7 @@ class Component(ttk.Label):
         )
 
 
+# this is the single input output
 class IO(Component):
     def __init__(self, master, type, func, **kwargs):
         if type == "input":
