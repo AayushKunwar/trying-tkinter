@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
-from functools import partial
+
+# https://www.reddit.com/r/learnpython/comments/nary8j/tkinter_pass_reference_to_self_to_lambda_function/:w
 
 # TODO: put const in settings file
 # TODO FIXME XXX BUG HACK NOTE
@@ -63,7 +64,7 @@ class Component(ttk.Label):
             temp = ttk.Button(
                 master=self,
                 text=f"{index_counter}",
-                command=partial(self.handle_button_input, temp, "input"),
+                # command=partial(self.handle_button_input, temp, "input"),
             )
             temp.place(x=0, y=i * height_coeff - (30 / 2), width=30, height=30)
             self.inputs.append(temp[i - 1])
